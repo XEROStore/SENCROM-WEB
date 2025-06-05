@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    @layer base {
+      :root {
+        --background: 224 71% 4%; /* Dark Blue/Gray */
+        --foreground: 210 20% 98%; /* Almost White */
+
+        --card: 224 71% 4%;
+        --card-foreground: 210 20% 98%;
+
+        --popover: 224 71% 4%;
+        --popover-foreground: 210 20% 98%;
+
+        --primary: 150 100% 54%; /* Electric Green */
+        --primary-foreground: 224 71% 4%;
+
+        --secondary: 150 60% 20%; /* Dark Green */
+        --secondary-foreground: 210 20% 98%;
+        
+        --muted: 215 28% 17%; /* Darker Gray */
+        --muted-foreground: 210 20% 98%;
+
+        --accent: 150 100% 54%; /* Electric Green for accents */
+        --accent-foreground: 224 71% 4%;
+
+        --destructive: 0 72% 51%; /* Red for destructive actions */
+        --destructive-foreground: 210 20% 98%;
+
+        --border: 215 28% 17%;
+        --input: 215 28% 17%;
+        --ring: 150 100% 54%; /* Electric Green for focus rings */
+
+        --radius: 0.5rem;
+      }
+
+      .dark {
+        --background: 224 71% 4%;
+        --foreground: 210 20% 98%;
+
+        --card: 224 71% 4%;
+        --card-foreground: 210 20% 98%;
+
+        --popover: 224 71% 4%;
+        --popover-foreground: 210 20% 98%;
+
+        --primary: 150 100% 54%;
+        --primary-foreground: 224 71% 4%;
+
+        --secondary: 150 60% 20%;
+        --secondary-foreground: 210 20% 98%;
+
+        --muted: 215 28% 17%;
+        --muted-foreground: 210 20% 98%;
+
+        --accent: 150 100% 54%;
+        --accent-foreground: 224 71% 4%;
+
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 210 20% 98%;
+
+        --border: 215 28% 17%;
+        --input: 215 28% 17%;
+        --ring: 150 100% 54%;
+      }
+    }
+
+    @layer base {
+      * {
+        @apply border-border;
+      }
+      body {
+        @apply bg-background text-foreground;
+        @apply font-poppins;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        @apply font-montserrat font-bold;
+      }
+    }
+
+    .glassmorphism {
+      background: rgba(26, 26, 26, 0.6); /* Sencrom Gray with transparency */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(57, 255, 20, 0.2); /* Subtle electric green border */
+    }
+
+    .neon-text {
+      text-shadow:
+        0 0 5px hsl(var(--primary)),
+        0 0 10px hsl(var(--primary)),
+        0 0 20px hsl(var(--primary)),
+        0 0 40px var(--lime-green), /* Lime green for broader glow */
+        0 0 70px var(--lime-green);
+    }
+    
+    .gradient-text {
+      @apply bg-gradient-to-r from-electric-green to-lime-green text-transparent bg-clip-text;
+    }
+
+    .section-padding {
+      @apply py-16 md:py-24;
+    }
+
+    .container-custom {
+      @apply container mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn-primary-animated {
+      @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95;
+      box-shadow: 0 0 10px 0px hsl(var(--primary) / 0.5), 0 0 20px 0px hsl(var(--primary) / 0.3);
+    }
+    .btn-primary-animated:hover {
+       box-shadow: 0 0 15px 0px hsl(var(--primary) / 0.7), 0 0 30px 0px hsl(var(--primary) / 0.5);
+    }
+
+    input[type="text"], input[type="email"], textarea {
+      @apply bg-sencrom-gray-light border border-lime-green/30 focus:border-lime-green focus:ring-lime-green rounded-md p-3 text-foreground placeholder-muted-foreground transition-all duration-300;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      box-shadow: 0 0 10px rgba(50, 205, 50, 0.5);
+    }
