@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import FloatingChatButton from '@/components/chat/FloatingChatButton';
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
 import ServicesPage from '@/pages/ServicesPage';
@@ -51,7 +50,6 @@ function App() {
         </main>
         <Footer />
         <Toaster />
-        <FloatingChatButton />
       </div>
     </Router>
   );
