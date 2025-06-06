@@ -46,31 +46,36 @@ const Header = ({ navLinks }) => {
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
       <div className="container-custom flex items-center justify-between h-32 md:h-40">
-        <Link to="/" className="flex items-center">
-          <img src={SencromLogoFull} alt="SENCROM Automatizaciones Logo" className="h-28 md:h-32" />
+        <Link to="/" className="flex items-center flex-shrink-0">
+          <img src={SencromLogoFull} alt="SENCROM Automatizaciones Logo" className="h-36 md:h-44 mr-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.name}
-              to={link.path}
-              className={({ isActive }) =>
-                `px-3 py-2 lg:px-4 rounded-md text-sm font-medium transition-colors hover:text-electric-green flex items-center space-x-2 ${
-                  isActive ? 'text-electric-green bg-sencrom-gray-light' : 'text-gray-300'
-                }`
-              }
-            >
-              {link.icon}
-              <span>{link.name}</span>
-            </NavLink>
-          ))}
+        <nav className="hidden md:flex items-center justify-center flex-grow">
+          <div className="flex items-center rounded-full glassmorphism border border-electric-green/20 shadow-lg shadow-electric-green/30 px-1 lg:px-2">
+            {navLinks.map((link, index) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-full text-sm font-medium transition-colors hover:text-electric-green flex items-center space-x-2 ${
+                    isActive ? 'text-electric-green bg-sencrom-gray-light/30' : 'text-gray-300'
+                  } ${index < navLinks.length - 1 ? 'border-r border-electric-green/10 mr-1' : ''}`
+                }
+              >
+                {link.icon}
+                <span>{link.name}</span>
+              </NavLink>
+            ))}
+          </div>
+        </nav>
+
+        <div className="hidden md:flex items-center flex-shrink-0 ml-auto">
           <Link to="/products">
-            <Button variant="outline" className="ml-4 border-electric-green text-electric-green hover:bg-electric-green hover:text-sencrom-gray-dark transition-all duration-300 ease-in-out transform hover:scale-105">
+            <Button variant="outline" className="border-electric-green text-electric-green hover:bg-electric-green hover:text-sencrom-gray-dark transition-all duration-300 ease-in-out transform hover:scale-105">
               Solicita una Demo
             </Button>
           </Link>
-        </nav>
+        </div>
 
         <div className="md:hidden">
           <Button onClick={toggleMenu} variant="ghost" size="icon" className="text-gray-300 hover:text-electric-green">

@@ -6,7 +6,7 @@ import React from 'react';
     import { Link } from 'react-router-dom';
 
     const HomePage = () => {
-      const sencromLogoUrl = "https://storage.googleapis.com/hostinger-horizons-assets-prod/4ff44e50-168e-43a1-9e05-9ef5897712ea/1863098b6f8b51ea0c3ffb8769e34d8a.png";
+      const sencromLogoUrl = "https://storage.googleapis.com/hostinger-horizons-assets-prod/4ff44e50-168e-43a1-9e05-9ef5897712ea/7cec7ac4a163d4e087e5076cde4eb704.png";
       const featuredServiceImageUrl = "https://storage.googleapis.com/hostinger-horizons-assets-prod/4ff44e50-168e-43a1-9e05-9ef5897712ea/c17032a66d72f4fd233cc77112bf149f.jpg";
 
       const summarizedServices = [
@@ -44,12 +44,12 @@ import React from 'react';
               <img 
                 className="absolute inset-0 w-full h-full object-cover opacity-40"
                 alt="Mano interactuando con una interfaz digital futurista de automatización"
-               src="https://storage.googleapis.com/hostinger-horizons-assets-prod/4ff44e50-168e-43a1-9e05-9ef5897712ea/a6087cdbbaff1c1d7787257e6b6c8072.jpg" />
+               src="https://zvkpayuqrgunnoqavjqo.supabase.co/storage/v1/object/public/images//fondo%20bot.png" />
               <div className="absolute inset-0 bg-gradient-to-b from-sencrom-gray-dark/30 via-sencrom-gray-dark to-sencrom-gray-dark"></div>
             </div>
             
             <motion.div 
-              className="relative z-10 container-custom text-center flex flex-col items-center"
+              className="relative z-10 container-custom text-center flex flex-col items-center pt-32 md:pt-40"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -209,20 +209,30 @@ import React from 'react';
           </AnimatedSection>
 
           {/* CTA Section */}
-          <AnimatedSection className="section-padding text-center bg-gradient-to-r from-dark-green via-sencrom-gray-dark to-dark-green">
-             <div className="container-custom">
+          <AnimatedSection className="section-padding text-center relative bg-[url('https://zvkpayuqrgunnoqavjqo.supabase.co/storage/v1/object/public/images//fondo.png')] bg-cover bg-center">
+             {/* Overlay to make text readable */}
+             <div className="absolute inset-0 bg-sencrom-gray-dark opacity-80"></div>
+             <div className="container-custom relative z-10">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
                 ¿Listo para llevar tu negocio al <span className="neon-text">siguiente nivel</span>?
                 </h2>
                 <p className="text-lg text-gray-300 max-w-xl mx-auto mb-10">
-                Hablemos de cómo la automatización inteligente puede transformar tu empresa.
+                Hablemos de la implementacion de automatizaciones que necesitas para mejorar tu empresa.
                 </p>
-                <Link to="/products">
-                  <Button size="lg" className="btn-primary-animated text-lg px-8 py-6 group">
-                    Contacta con un Experto
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  className="btn-primary-animated text-lg px-8 py-6 group"
+                  onClick={() => {
+                    // Abrir el chat del asistente virtual
+                    const chatButton = document.querySelector('[aria-label="Abrir asistente virtual"]');
+                    if (chatButton) {
+                      chatButton.click();
+                    }
+                  }}
+                >
+                  Contacta con un Experto
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
              </div>
           </AnimatedSection>
         </div>

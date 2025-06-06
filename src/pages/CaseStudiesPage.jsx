@@ -98,7 +98,7 @@ const CaseStudiesPage = () => {
     >
       {/* Hero Section */}
       <div className="bg-sencrom-gray-dark text-white">
-        <AnimatedSection className="pt-8 pb-8 md:pt-12 md:pb-12 bg-gradient-to-b from-sencrom-gray via-sencrom-gray-dark to-sencrom-gray-dark">
+        <AnimatedSection className="pt-32 pb-8 md:pt-40 md:pb-12 bg-gradient-to-b from-sencrom-gray via-sencrom-gray-dark to-sencrom-gray-dark">
           <div className="container-custom text-center">
             <motion.h1 
               className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 flex items-center justify-center"

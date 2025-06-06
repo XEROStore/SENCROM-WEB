@@ -90,10 +90,25 @@ const ProductCard = ({ product, onOpenModal }) => (
       </div>
       <p className="text-gray-400 text-sm mb-6 flex-grow">{product.shortDescription}</p>
     </div>
-    <Button onClick={() => onOpenModal(product)} className="w-full btn-secondary-animated group">
-      Ver Detalles
-      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button onClick={() => onOpenModal(product)} className="w-full btn-secondary-animated group">
+        Ver Detalles
+        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+      </Button>
+      <Button 
+        onClick={() => {
+          // Abrir el chat del asistente virtual
+          const chatButton = document.querySelector('[aria-label="Abrir asistente virtual"]');
+          if (chatButton) {
+            chatButton.click();
+          }
+        }} 
+        className="w-full btn-primary-animated group"
+      >
+        Solicitar una Demostración
+        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+      </Button>
+    </div>
   </motion.div>
 );
 
@@ -196,7 +211,7 @@ const ProductsPage = () => {
 
   return (
     <div className="bg-sencrom-gray-dark text-white min-h-screen">
-      <AnimatedSection className="pt-16 pb-8 md:pt-24 md:pb-12 bg-gradient-to-b from-sencrom-gray via-sencrom-gray-dark to-sencrom-gray-dark">
+      <AnimatedSection className="pt-32 pb-8 md:pt-40 md:pb-12 bg-gradient-to-b from-sencrom-gray via-sencrom-gray-dark to-sencrom-gray-dark">
         <div className="container-custom text-center">
           <motion.h1 
             className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 flex items-center justify-center"
