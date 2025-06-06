@@ -223,10 +223,9 @@ import React from 'react';
                   size="lg" 
                   className="btn-primary-animated text-lg px-8 py-6 group"
                   onClick={() => {
-                    // Abrir el chat del asistente virtual
-                    const chatButton = document.querySelector('[aria-label="Abrir asistente virtual"]');
-                    if (chatButton) {
-                      chatButton.click();
+                    // Abrir el widget de Chatbase
+                    if (window.chatbase) {
+                      window.chatbase('open');
                     }
                   }}
                 >

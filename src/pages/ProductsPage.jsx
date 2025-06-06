@@ -91,19 +91,18 @@ const ProductCard = ({ product, onOpenModal }) => (
       <p className="text-gray-400 text-sm mb-6 flex-grow">{product.shortDescription}</p>
     </div>
     <div className="flex flex-col gap-2">
-      <Button onClick={() => onOpenModal(product)} className="w-full btn-secondary-animated group">
+      <Button onClick={() => onOpenModal(product)} className="w-full btn-secondary-animated animated-border-button group">
         Ver Detalles
         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
       </Button>
       <Button 
         onClick={() => {
-          // Abrir el chat del asistente virtual
-          const chatButton = document.querySelector('[aria-label="Abrir asistente virtual"]');
-          if (chatButton) {
-            chatButton.click();
+          // Abrir el widget de Chatbase
+          if (window.chatbase) {
+            window.chatbase('open');
           }
         }} 
-        className="w-full btn-primary-animated group"
+        className="w-full btn-primary-animated animated-border-button group"
       >
         Solicitar una Demostración
         <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
