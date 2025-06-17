@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -7,11 +7,11 @@ const ShapeAIChatButton = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
-    if (window.ShapesAPI) {
+    if (window.ShapesInstance) {
       if (!isOpen) {
-        window.ShapesAPI.open();
+        window.ShapesInstance.open();
       } else {
-        window.ShapesAPI.close();
+        window.ShapesInstance.close();
       }
     }
   };
