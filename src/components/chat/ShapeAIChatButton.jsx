@@ -1,44 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ShapeAIChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    // Verificar si Shapes API está disponible
-    const checkShapesAPI = () => {
-      if (window.ShapesAPI) {
-        setIsLoaded(true);
-      } else {
-        setTimeout(checkShapesAPI, 1000); // Reintentar cada segundo
-      }
-    };
-    checkShapesAPI();
-  }, []);
 
   const toggleChat = () => {
-    if (!isLoaded) {
-      console.warn('Shapes API no está cargada aún');
-      return;
-    }
-
     setIsOpen(!isOpen);
     try {
-      if (!isOpen) {
-        window.ShapesAPI.open();
-      } else {
-        window.ShapesAPI.close();
+      if (window.ShapesAPI) {
+        if (!isOpen) {
+          window.ShapesAPI.open();
+        } else {
+          window.ShapesAPI.close();
+        }
       }
     } catch (error) {
-      console.error('Error al interactuar con Shapes API:', error);
+      console.error('Error al interactuar con Shapes:', error);
     }
   };
-
-  if (!isLoaded) {
-    return null; // No mostrar el botón hasta que Shapes API esté cargada
-  }
 
   return (
     <div className="fixed bottom-6 left-6 z-50">
