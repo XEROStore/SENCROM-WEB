@@ -39,6 +39,7 @@
 			const shapesScript = document.createElement('script');
 			shapesScript.src = 'https://api.shapes.inc/v1/embed.js';
 			shapesScript.async = true;
+			shapesScript.defer = true;
 			shapesScript.onload = function() {
 				if (window.ShapesAPI) {
 					window.ShapesAPI.init({
@@ -51,11 +52,20 @@
 							textColor: '#1f2937',
 							borderRadius: '12px',
 							boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+						},
+						onLoad: function() {
+							console.log('Shapes widget loaded successfully');
+						},
+						onError: function(error) {
+							console.error('Error loading Shapes widget:', error);
 						}
 					});
 				}
 			};
-			document.body.appendChild(shapesScript);
+			shapesScript.onerror = function(error) {
+				console.error('Error loading Shapes script:', error);
+			};
+			document.head.appendChild(shapesScript);
 		</script>
 	</body>
 </html>
