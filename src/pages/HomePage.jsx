@@ -49,7 +49,7 @@ import React from 'react';
             </div>
             
             <motion.div 
-              className="relative z-10 container-custom text-center flex flex-col items-center pt-32 md:pt-40"
+              className="relative z-10 container-custom text-center flex flex-col items-center pt-24 md:pt-28"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}

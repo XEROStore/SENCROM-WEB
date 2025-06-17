@@ -45,9 +45,9 @@ const Header = ({ navLinks }) => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="container-custom flex items-center justify-between h-32 md:h-40">
+      <div className="container-custom flex items-center justify-between h-20 md:h-24">
         <Link to="/" className="flex items-center flex-shrink-0">
-          <img src={SencromLogoFull} alt="SENCROM Automatizaciones Logo" className="h-36 md:h-44 mr-auto" />
+          <img src={SencromLogoFull} alt="SENCROM Automatizaciones Logo" className="h-20 md:h-24 mr-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center justify-center flex-grow">

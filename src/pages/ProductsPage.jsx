@@ -291,10 +291,6 @@ const ProductsPage = () => {
               </div>
 
               <DialogFooter className="p-6 pt-4 border-t border-sencrom-gray/50">
-                <Button className="btn-primary-animated group">
-                  {selectedProduct.cta.text}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
               </DialogFooter>
             </DialogContent>
           )}

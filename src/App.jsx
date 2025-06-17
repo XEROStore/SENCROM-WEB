@@ -10,6 +10,8 @@ import CaseStudiesPage from '@/pages/CaseStudiesPage';
 import ContactPage from '@/pages/ContactPage';
 import { Toaster } from '@/components/ui/toaster';
 import { Bot, Zap, Users, BrainCircuit, Mail, Package } from 'lucide-react';
+import ChatbaseWidget from './components/chat/ChatbaseWidget';
+import ShapeAIChatButton from './components/chat/ShapeAIChatButton';
 
 const ProductsPage = lazy(() => import('@/pages/ProductsPage.jsx'));
 
@@ -50,6 +52,8 @@ function App() {
         </main>
         <Footer />
         <Toaster />
+        <ChatbaseWidget />
+        <ShapeAIChatButton />
       </div>
     </Router>
   );
