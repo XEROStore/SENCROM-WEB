@@ -7,11 +7,11 @@ const ShapeAIChatButton = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
-    if (window.ShapesInstance) {
+    if (window.ShapesAPI) {
       if (!isOpen) {
-        window.ShapesInstance.open();
+        window.ShapesAPI.open();
       } else {
-        window.ShapesInstance.close();
+        window.ShapesAPI.close();
       }
     }
   };

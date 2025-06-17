@@ -31,24 +31,31 @@
 				}
 			})();
 		</script>
-		<script src="https://cdn.jsdelivr.net/npm/@shapesinc/sdk@latest/dist/shapes.min.js"></script>
 		<script>
-			// Inicializar Shapes SDK
-			const shapes = new Shapes({
-				apiKey: 'W2773CXEGKVNEIGPMV3BDDJBE9XQOKFNBMIWDODGX1W',
-				container: document.getElementById('shape-ai-widget'),
-				position: 'bottom-left',
-				theme: {
-					primaryColor: '#2563eb',
-					backgroundColor: '#ffffff',
-					textColor: '#1f2937',
-					borderRadius: '12px',
-					boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+			// Configuración de Shapes API
+			window.SHAPESINC_API_KEY = 'W2773CXEGKVNEIGPMV3BDDJBE9XQOKFNBMIWDODGX1W';
+			
+			// Cargar el script de Shapes API
+			const shapesScript = document.createElement('script');
+			shapesScript.src = 'https://api.shapes.inc/v1/embed.js';
+			shapesScript.async = true;
+			shapesScript.onload = function() {
+				if (window.ShapesAPI) {
+					window.ShapesAPI.init({
+						apiKey: window.SHAPESINC_API_KEY,
+						container: 'shape-ai-widget',
+						position: 'bottom-left',
+						theme: {
+							primaryColor: '#2563eb',
+							backgroundColor: '#ffffff',
+							textColor: '#1f2937',
+							borderRadius: '12px',
+							boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+						}
+					});
 				}
-			});
-
-			// Exponer la instancia globalmente
-			window.ShapesInstance = shapes;
+			};
+			document.body.appendChild(shapesScript);
 		</script>
 	</body>
 </html>
