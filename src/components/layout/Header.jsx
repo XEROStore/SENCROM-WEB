@@ -53,19 +53,19 @@ const Header = ({ navLinks }) => {
         <nav className="hidden md:flex items-center justify-center flex-grow">
           <div className="flex items-center rounded-full glassmorphism border border-electric-green/20 shadow-lg shadow-electric-green/30 px-1 lg:px-2">
             {navLinks.map((link, index) => (
-              <NavLink
-                key={link.name}
-                to={link.path}
-                className={({ isActive }) =>
+            <NavLink
+              key={link.name}
+              to={link.path}
+              className={({ isActive }) =>
                   `px-4 py-2 rounded-full text-sm font-medium transition-colors hover:text-electric-green flex items-center space-x-2 ${
                     isActive ? 'text-electric-green bg-sencrom-gray-light/30' : 'text-gray-300'
                   } ${index < navLinks.length - 1 ? 'border-r border-electric-green/10 mr-1' : ''}`
-                }
-              >
-                {link.icon}
-                <span>{link.name}</span>
-              </NavLink>
-            ))}
+              }
+            >
+              {link.icon}
+              <span>{link.name}</span>
+            </NavLink>
+          ))}
           </div>
         </nav>
 

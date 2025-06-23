@@ -229,9 +229,9 @@ import React from 'react';
                     }
                   }}
                 >
-                  Contacta con un Experto
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                    Contacta con un Experto
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
              </div>
           </AnimatedSection>
         </div>

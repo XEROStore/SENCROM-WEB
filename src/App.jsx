@@ -11,7 +11,7 @@ import ContactPage from '@/pages/ContactPage';
 import { Toaster } from '@/components/ui/toaster';
 import { Bot, Zap, Users, BrainCircuit, Mail, Package } from 'lucide-react';
 import ChatbaseWidget from './components/chat/ChatbaseWidget';
-import ShapeAIChatButton from './components/chat/ShapeAIChatButton';
+import WebBotChat from './components/chat/WebBotChat';
 
 const ProductsPage = lazy(() => import('@/pages/ProductsPage.jsx'));
 
@@ -53,7 +53,7 @@ function App() {
         <Footer />
         <Toaster />
         <ChatbaseWidget />
-        <ShapeAIChatButton />
+        <WebBotChat />
       </div>
     </Router>
   );

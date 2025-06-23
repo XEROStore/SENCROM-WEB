@@ -92,9 +92,9 @@ const ProductCard = ({ product, onOpenModal }) => (
     </div>
     <div className="flex flex-col gap-2">
       <Button onClick={() => onOpenModal(product)} className="w-full btn-secondary-animated animated-border-button group">
-        Ver Detalles
-        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-      </Button>
+      Ver Detalles
+      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+    </Button>
       <Button 
         onClick={() => {
           // Abrir el widget de Chatbase
