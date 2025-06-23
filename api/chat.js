@@ -4,6 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 // Configuración de Supabase
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Validar que las variables de entorno estén configuradas
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Error: Variables de entorno de Supabase no configuradas');
+  console.error('VITE_SUPABASE_URL:', supabaseUrl ? 'Configurada' : 'FALTA');
+  console.error('SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceKey ? 'Configurada' : 'FALTA');
+  throw new Error('Variables de entorno de Supabase no configuradas. Verifica VITE_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Vercel.');
+}
+
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function sendAppointmentToMake(payload) {
