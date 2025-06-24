@@ -104,10 +104,10 @@ export default async function handler(req, res) {
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
       const { email_empleado, email_invitado_externo, fecha, hora, descripcion } = respuesta.datos_cita;
       if (email_empleado && email_invitado_externo && fecha && hora && descripcion) {
+        // Recalcular siempre startTime y endTime en base a la fecha y hora actuales
         const startTime = `${fecha}T${hora}:00`;
-        // Calcula endTime sumando 30 minutos
         const startDate = new Date(startTime);
-        const endDate = new Date(startDate.getTime() + 30 * 60000);
+        const endDate = new Date(startDate.getTime() + 30 * 60000); // suma 30 minutos
         const endTime = endDate.toISOString();
 
         const payload = {
@@ -117,14 +117,12 @@ export default async function handler(req, res) {
           fecha: fecha,
           hora: hora,
           descripcion: descripcion,
-          // Datos adicionales para Make si son necesarios
           email_empleado: email_empleado,
           start_time: startTime,
-          end_time: endDate.toISOString(),
+          end_time: endTime,
         };
         const makeResponse = await sendActionToMake(payload);
         if (makeResponse && makeResponse.message) {
-          // Si Make devuelve un mensaje, lo añadimos a la respuesta del bot.
           respuesta.respuesta_al_usuario += `\n\n${makeResponse.message}`;
         }
       }
