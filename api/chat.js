@@ -102,10 +102,11 @@ export default async function handler(req, res) {
 
     // Automatización: si la acción es 'agendar' o 'recomendar_ticket', enviamos el webhook a Make
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
-      const { email_empleado, email_invitado_externo, fecha, hora, descripcion } = respuesta.datos_cita;
+      const { email_empleado, email_invitado_externo, fecha, hora, descripcion, nombre_cliente, telefono, nombre_negocio, sector_negocio } = respuesta.datos_cita;
       // Tomar el nombre del usuario de la IA si está disponible
-      let nombreUsuario = (respuesta.datos_cita.nombre_cliente || respuesta.datos_cita.nombre || (usuario_web && usuario_web.name) || usuario_web || 'Usuario Web');
-      if (email_empleado && email_invitado_externo && fecha && hora && descripcion) {
+      let nombreUsuario = (nombre_cliente || respuesta.datos_cita.nombre || (usuario_web && usuario_web.name) || usuario_web || 'Usuario Web');
+      // Validar que TODOS los datos requeridos estén presentes
+      if (email_empleado && email_invitado_externo && fecha && hora && descripcion && nombreUsuario && telefono && nombre_negocio && sector_negocio) {
         // Siempre usar zona horaria UTC-4
         const TIMEZONE_OFFSET = '-04:00';
         const startTime = `${fecha}T${hora}:00${TIMEZONE_OFFSET}`;
@@ -121,6 +122,9 @@ export default async function handler(req, res) {
           fecha: fecha,
           hora: hora,
           descripcion: descripcion,
+          telefono: telefono,
+          nombre_negocio: nombre_negocio,
+          sector_negocio: sector_negocio,
           email_empleado: email_empleado,
           start_time: startTime,
           end_time: endTime,
