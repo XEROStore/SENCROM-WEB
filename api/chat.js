@@ -150,32 +150,44 @@ export default async function handler(req, res) {
     
     if (respuesta.accion === 'recomendar_ticket' && respuesta.datos_ticket) {
       const { tipo_ticket, descripcion_problema } = respuesta.datos_ticket;
-      const emailUsuario = respuesta.datos_ticket.email || (usuario_web && usuario_web.email) || 'no-proporcionado';
-      const nombreUsuario = respuesta.datos_ticket.nombre || (usuario_web && usuario_web.name) || 'Usuario Web';
+      const emailUsuario = respuesta.datos_ticket.email || (usuario_web && usuario_web.email) || '';
+      const nombreUsuario = respuesta.datos_ticket.nombre || (usuario_web && usuario_web.name) || '';
+      const telefonoUsuario = respuesta.datos_ticket.telefono || '';
+      const nombreNegocio = respuesta.datos_ticket.nombre_negocio || '';
 
-      if (descripcion_problema) {
+      // Validar que TODOS los datos requeridos estén presentes
+      const datosFaltantes = [];
+      if (!nombreUsuario) datosFaltantes.push('nombre completo');
+      if (!emailUsuario) datosFaltantes.push('correo electrónico');
+      if (!telefonoUsuario) datosFaltantes.push('teléfono');
+      if (!nombreNegocio) datosFaltantes.push('nombre de la empresa');
+      if (!tipo_ticket) datosFaltantes.push('tipo de ticket (soporte o venta)');
+      if (!descripcion_problema) datosFaltantes.push('descripción detallada del problema o solicitud');
+
+      if (datosFaltantes.length === 0) {
         const asuntoTicket = tipo_ticket
           ? `Nuevo Ticket: ${tipo_ticket}`
           : 'Nuevo Ticket de Soporte';
-
-        // IDs de Trello (copiados de config.js del bot de Discord)
         const TRELLO_BOARD_ID = 'TU_ID_DEL_BOARD'; // Reemplaza por el valor real de tu board
-        // Puedes poner aquí el valor real, por ejemplo: '65a1b2c3d4e5f6g7h8i9j0k1'
-
         const payload = {
           tipo: 'ticket',
           asunto: asuntoTicket,
           descripcion: descripcion_problema,
           email: emailUsuario,
           nombre: nombreUsuario,
+          telefono: telefonoUsuario,
+          nombre_negocio: nombreNegocio,
+          tipo_ticket: tipo_ticket,
           reportado_por: nombreUsuario,
           board_id: TRELLO_BOARD_ID,
-          tipo_ticket: tipo_ticket || 'soporte', // por defecto 'soporte' si no viene
         };
         const makeResponse = await sendActionToMake(payload);
         if (makeResponse && makeResponse.message) {
           respuesta.respuesta_al_usuario += `\n\n${makeResponse.message}`;
         }
+      } else {
+        // Faltan datos, pide solo el primero que falte
+        respuesta.respuesta_al_usuario = `Por favor, proporcióname ${datosFaltantes[0]}.`;
       }
     }
 
