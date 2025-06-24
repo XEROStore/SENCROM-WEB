@@ -140,9 +140,10 @@ Contacto y más información en https://sencrom-web.vercel.app y en discord http
  * Procesa un mensaje de usuario y devuelve la respuesta y acción sugerida por la IA.
  * @param {string} mensaje - El mensaje del usuario.
  * @param {Array} historial - Historial de la conversación (opcional).
+ * @param {Object} usuario_web - Información del usuario web (opcional).
  * @returns {Promise<Object>} - Objeto con la respuesta y acción.
  */
-export async function procesarMensajeBot(mensaje, historial = null) {
+export async function procesarMensajeBot(mensaje, historial = null, usuario_web = null) {
   let messages = [];
 
   // Siempre inicia con el system prompt actualizado

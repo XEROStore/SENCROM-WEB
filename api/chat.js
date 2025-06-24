@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Falta el mensaje.' });
   }
   try {
-    const respuesta = await procesarMensajeBot(mensaje, historial);
+    const respuesta = await procesarMensajeBot(mensaje, historial, usuario_web);
 
     // Automatización: si la acción es 'agendar' o 'recomendar_ticket', enviamos el webhook a Make
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
