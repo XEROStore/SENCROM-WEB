@@ -167,30 +167,5 @@ export async function procesarMensajeBot(mensaje, historial = null, usuario_web 
 
   const analysis = JSON.parse(response.choices[0].message.content);
 
-  if (analysis.accion === 'recomendar_ticket' && analysis.datos_ticket) {
-    const { tipo_ticket, descripcion_problema } = analysis.datos_ticket;
-    const emailUsuario = analysis.datos_ticket.email || (usuario_web && usuario_web.email) || 'no-proporcionado';
-    const nombreUsuario = analysis.datos_ticket.nombre || (usuario_web && usuario_web.name) || 'Usuario Web';
-
-    if (descripcion_problema) {
-      const asuntoTicket = tipo_ticket
-        ? `Nuevo Ticket: ${tipo_ticket}`
-        : 'Nuevo Ticket de Soporte';
-
-      const payload = {
-        tipo: 'ticket',
-        asunto: asuntoTicket,
-        descripcion: descripcion_problema,
-        email: emailUsuario,
-        nombre: nombreUsuario,
-        reportado_por: nombreUsuario,
-      };
-      const makeResponse = await sendActionToMake(payload);
-      if (makeResponse && makeResponse.message) {
-        analysis.respuesta_al_usuario += `\n\n${makeResponse.message}`;
-      }
-    }
-  }
-
   return analysis;
 } 
