@@ -103,16 +103,25 @@ export default async function handler(req, res) {
     // Automatización: si la acción es 'agendar' o 'recomendar_ticket', enviamos el webhook a Make
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
       const { email_empleado, email_invitado_externo, fecha, hora, descripcion, nombre_cliente, telefono, nombre_negocio, sector_negocio } = respuesta.datos_cita;
-      // Tomar el nombre del usuario de la IA si está disponible
       let nombreUsuario = (nombre_cliente || respuesta.datos_cita.nombre || (usuario_web && usuario_web.name) || usuario_web || 'Usuario Web');
       // Validar que TODOS los datos requeridos estén presentes
-      if (email_empleado && email_invitado_externo && fecha && hora && descripcion && nombreUsuario && telefono && nombre_negocio && sector_negocio) {
-        // Siempre usar zona horaria UTC-4
+      const datosFaltantes = [];
+      if (!email_empleado) datosFaltantes.push('con quién es la cita (empleado de SENCROM)');
+      if (!email_invitado_externo) datosFaltantes.push('correo electrónico');
+      if (!fecha) datosFaltantes.push('fecha');
+      if (!hora) datosFaltantes.push('hora');
+      if (!descripcion) datosFaltantes.push('motivo de la cita');
+      if (!nombreUsuario) datosFaltantes.push('nombre completo');
+      if (!telefono) datosFaltantes.push('teléfono');
+      if (!nombre_negocio) datosFaltantes.push('nombre de la empresa');
+      if (!sector_negocio) datosFaltantes.push('a qué se dedica la empresa');
+
+      if (datosFaltantes.length === 0) {
+        // Todos los datos presentes, agenda normalmente
         const TIMEZONE_OFFSET = '-04:00';
         const startTime = `${fecha}T${hora}:00${TIMEZONE_OFFSET}`;
         const startDate = new Date(startTime);
         const endDate = new Date(startDate.getTime() + 30 * 60000); // suma 30 minutos
-        // endTime en formato ISO con zona horaria UTC-4
         const endTime = endDate.toISOString().replace('Z', TIMEZONE_OFFSET);
 
         const payload = {
@@ -133,6 +142,9 @@ export default async function handler(req, res) {
         if (makeResponse && makeResponse.message) {
           respuesta.respuesta_al_usuario += `\n\n${makeResponse.message}`;
         }
+      } else {
+        // Faltan datos, pide solo el primero que falte
+        respuesta.respuesta_al_usuario = `Por favor, proporcióname ${datosFaltantes[0]}.`;
       }
     }
     
