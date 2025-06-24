@@ -132,19 +132,27 @@ export default async function handler(req, res) {
     
     if (respuesta.accion === 'recomendar_ticket' && respuesta.datos_ticket) {
       const { tipo_ticket, descripcion_problema } = respuesta.datos_ticket;
-      // Asumimos que podemos obtener el email y nombre del usuario si se loguea en el futuro
-      // Por ahora, usamos placeholders.
       const emailUsuario = respuesta.datos_ticket.email || (usuario_web && usuario_web.email) || 'no-proporcionado';
       const nombreUsuario = respuesta.datos_ticket.nombre || (usuario_web && usuario_web.name) || 'Usuario Web';
 
-      if (tipo_ticket && descripcion_problema) {
+      if (descripcion_problema) {
+        const asuntoTicket = tipo_ticket
+          ? `Nuevo Ticket: ${tipo_ticket}`
+          : 'Nuevo Ticket de Soporte';
+
+        // IDs de Trello (copiados de config.js del bot de Discord)
+        const TRELLO_BOARD_ID = 'TU_ID_DEL_BOARD'; // Reemplaza por el valor real de tu board
+        // Puedes poner aquí el valor real, por ejemplo: '65a1b2c3d4e5f6g7h8i9j0k1'
+
         const payload = {
           tipo: 'ticket',
-          asunto: `Nuevo Ticket: ${tipo_ticket}`,
+          asunto: asuntoTicket,
           descripcion: descripcion_problema,
           email: emailUsuario,
           nombre: nombreUsuario,
           reportado_por: nombreUsuario,
+          board_id: TRELLO_BOARD_ID,
+          tipo_ticket: tipo_ticket || 'soporte', // por defecto 'soporte' si no viene
         };
         const makeResponse = await sendActionToMake(payload);
         if (makeResponse && makeResponse.message) {
