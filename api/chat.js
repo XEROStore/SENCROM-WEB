@@ -104,11 +104,13 @@ export default async function handler(req, res) {
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
       const { email_empleado, email_invitado_externo, fecha, hora, descripcion } = respuesta.datos_cita;
       if (email_empleado && email_invitado_externo && fecha && hora && descripcion) {
-        // Recalcular siempre startTime y endTime en base a la fecha y hora actuales
-        const startTime = `${fecha}T${hora}:00`;
+        // Siempre usar zona horaria UTC-4
+        const TIMEZONE_OFFSET = '-04:00';
+        const startTime = `${fecha}T${hora}:00${TIMEZONE_OFFSET}`;
         const startDate = new Date(startTime);
         const endDate = new Date(startDate.getTime() + 30 * 60000); // suma 30 minutos
-        const endTime = endDate.toISOString();
+        // endTime en formato ISO con zona horaria UTC-4
+        const endTime = endDate.toISOString().replace('Z', TIMEZONE_OFFSET);
 
         const payload = {
           tipo: 'cita',
