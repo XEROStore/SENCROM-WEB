@@ -15,54 +15,34 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-async function sendAppointmentToMake(payload) {
+/**
+ * Envía una acción y su payload al webhook unificado de Make.
+ * Espera una respuesta de confirmación para mostrar en el chat.
+ * @param {object} payload - El objeto de datos para enviar a Make.
+ * @returns {Promise<object|null>} - La respuesta de Make o null si hay un error.
+ */
+async function sendActionToMake(payload) {
   try {
-    const response = await fetch('https://hook.us2.make.com/yvl3dtvwu2fn0h02o829vxmix12yrtsc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return await response.json();
-  } catch (error) {
-    console.error('Error enviando datos de cita a Make:', error);
-    return null;
-  }
-}
-
-async function sendTicketToMake(payload) {
-  try {
-    const response = await fetch('https://hook.us2.make.com/lsmsrjyui8q8ucoy9c4tyf1hdon76dsh', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return await response.json();
-  } catch (error) {
-    console.error('Error enviando ticket a Make:', error);
-    return null;
-  }
-}
-
-async function sendDemoRequestToMake(payload) {
-  try {
-    // URL específica para solicitudes de demo desde la web
-    const response = await fetch('https://hook.us2.make.com/yvl3dtvwu2fn0h02o829vxmix12yrtsc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...payload,
-        origen: 'web_bot',
-        timestamp: new Date().toISOString()
-      }),
-    });
+    // URL del nuevo webhook unificado para el bot web
+    const makeWebhookUrl = 'https://hook.us2.make.com/l7cc8fpylym4s4tdpkkyvedhqufkiu12';
     
+    const response = await fetch(makeWebhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorBody = await response.text();
+      console.error(`Error de Make - Status: ${response.status}, Body: ${errorBody}`);
+      throw new Error(`Error en la llamada al webhook de Make. Status: ${response.status}`);
     }
-    
+
+    // Devolvemos la respuesta JSON de Make (que contendrá el mensaje para el chat)
     return await response.json();
   } catch (error) {
-    console.error('Error enviando solicitud de demo a Make:', error);
+    console.error('Error enviando la acción a Make:', error);
+    // En caso de fallo, no interrumpimos el flujo, solo lo logueamos.
     return null;
   }
 }
@@ -131,82 +111,78 @@ export default async function handler(req, res) {
         const endTime = endDate.toISOString();
 
         const payload = {
-          usuario: usuario_web || 'web-user',
-          email_destinatario: email_empleado,
-          email_invitado_externo: email_invitado_externo,
-          start_time: startTime,
-          end_time: endTime,
+          tipo: 'cita',
+          nombre: usuario_web || 'Usuario Web',
+          email: email_invitado_externo,
+          fecha: fecha,
+          hora: hora,
           descripcion: descripcion,
-          channel_id: 'web',
+          // Datos adicionales para Make si son necesarios
+          email_empleado: email_empleado,
+          start_time: startTime,
+          end_time: endDate.toISOString(),
         };
-        await sendAppointmentToMake(payload);
+        const makeResponse = await sendActionToMake(payload);
+        if (makeResponse && makeResponse.message) {
+          // Si Make devuelve un mensaje, lo añadimos a la respuesta del bot.
+          respuesta.respuesta_al_usuario += `\n\n${makeResponse.message}`;
+        }
       }
     }
     
     if (respuesta.accion === 'recomendar_ticket' && respuesta.datos_ticket) {
       const { tipo_ticket, descripcion_problema } = respuesta.datos_ticket;
+      // Asumimos que podemos obtener el email y nombre del usuario si se loguea en el futuro
+      // Por ahora, usamos placeholders.
+      const emailUsuario = respuesta.datos_ticket.email || (usuario_web && usuario_web.email) || 'no-proporcionado';
+      const nombreUsuario = respuesta.datos_ticket.nombre || (usuario_web && usuario_web.name) || 'Usuario Web';
+
       if (tipo_ticket && descripcion_problema) {
         const payload = {
-          tipo: tipo_ticket,
-          descripcion_problema,
-          reportado_por: usuario_web || 'web-user',
-          channel_id: 'web',
+          tipo: 'ticket',
+          asunto: `Nuevo Ticket: ${tipo_ticket}`,
+          descripcion: descripcion_problema,
+          email: emailUsuario,
+          nombre: nombreUsuario,
+          reportado_por: nombreUsuario,
         };
-        await sendTicketToMake(payload);
+        const makeResponse = await sendActionToMake(payload);
+        if (makeResponse && makeResponse.message) {
+          respuesta.respuesta_al_usuario += `\n\n${makeResponse.message}`;
+        }
       }
     }
 
-    // Manejo de solicitudes de demo
+    // Manejo de solicitudes de demo / cotizaciones
     if (respuesta.accion === 'solicitar_demo' && respuesta.datos_demo) {
       const datosDemo = respuesta.datos_demo;
       
-      // Verificar si tenemos todos los datos necesarios para guardar
-      if (datosDemo.producto_servicio && datosDemo.nombre_cliente && 
-          datosDemo.telefono && datosDemo.email && datosDemo.nombre_negocio) {
+      if (datosDemo.producto_servicio && datosDemo.nombre_cliente && datosDemo.email) {
         
-        try {
-          // Guardar en Supabase
-          const resultado = await guardarSolicitudDemo(datosDemo);
-          
-          if (resultado.success) {
-            // Enviar notificación por email a través de Make
-            const payload = {
-              tipo: 'solicitud_demo',
-              datos_cliente: {
-                nombre: datosDemo.nombre_cliente,
-                telefono: datosDemo.telefono,
-                email: datosDemo.email,
-                negocio: datosDemo.nombre_negocio,
-                sector: datosDemo.sector_negocio || 'No especificado',
-                tamano: datosDemo.tamano_empresa || 'No especificado',
-                desafios: datosDemo.desafios || 'No especificado'
-              },
-              producto_servicio: datosDemo.producto_servicio,
-              fecha_solicitud: new Date().toISOString(),
-              canal: 'web',
-              id_solicitud: resultado.data.id,
-              prioridad: 'alta'
-            };
+        // Guardamos en Supabase primero (opcional, pero buena práctica)
+        await guardarSolicitudDemo(datosDemo);
+
+        const payload = {
+          tipo: 'cotizacion', // Unificamos demo y cotización por ahora
+          email: datosDemo.email,
+          nombre: datosDemo.nombre_cliente,
+          detalles: `Quiere una cotización/demo para: ${datosDemo.producto_servicio}. Desafíos: ${datosDemo.desafios || 'N/A'}`,
+          // Añadimos el resto de datos por si son útiles para el equipo de ventas
+          telefono: datosDemo.telefono,
+          nombre_negocio: datosDemo.nombre_negocio,
+          sector_negocio: datosDemo.sector_negocio,
+          tamano_empresa: datosDemo.tamano_empresa
+        };
             
-            const makeResult = await sendDemoRequestToMake(payload);
-            
-            if (makeResult) {
-              console.log('Solicitud de demo enviada exitosamente a Make');
-            } else {
-              console.warn('No se pudo enviar la solicitud de demo a Make, pero se guardó en Supabase');
-            }
-          } else {
-            console.error('Error guardando solicitud de demo en Supabase:', resultado.error);
-          }
-        } catch (error) {
-          console.error('Error procesando solicitud de demo:', error);
-        }
-      } else {
-        console.log('Datos de demo incompletos, continuando con el flujo normal');
+        // Para cotizaciones, no esperamos respuesta para el chat, solo enviamos.
+        await sendActionToMake(payload);
+        
+        // La respuesta al usuario ya la da el bot (ej: "Gracias, hemos recibido...").
+        // No necesitamos añadir nada más de Make aquí.
       }
     }
 
-    console.log('Respuesta enviada al frontend:', respuesta);
+    console.log('Respuesta final enviada al frontend:', respuesta);
     res.status(200).json({ respuesta });
   } catch (error) {
     console.error('Error en /api/chat:', error, error?.message, error?.stack);
