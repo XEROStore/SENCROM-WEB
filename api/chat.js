@@ -103,6 +103,8 @@ export default async function handler(req, res) {
     // Automatización: si la acción es 'agendar' o 'recomendar_ticket', enviamos el webhook a Make
     if (respuesta.accion === 'agendar' && respuesta.datos_cita) {
       const { email_empleado, email_invitado_externo, fecha, hora, descripcion } = respuesta.datos_cita;
+      // Tomar el nombre del usuario de la IA si está disponible
+      let nombreUsuario = (respuesta.datos_cita.nombre_cliente || respuesta.datos_cita.nombre || (usuario_web && usuario_web.name) || usuario_web || 'Usuario Web');
       if (email_empleado && email_invitado_externo && fecha && hora && descripcion) {
         // Siempre usar zona horaria UTC-4
         const TIMEZONE_OFFSET = '-04:00';
@@ -114,7 +116,7 @@ export default async function handler(req, res) {
 
         const payload = {
           tipo: 'cita',
-          nombre: usuario_web || 'Usuario Web',
+          nombre: nombreUsuario,
           email: email_invitado_externo,
           fecha: fecha,
           hora: hora,

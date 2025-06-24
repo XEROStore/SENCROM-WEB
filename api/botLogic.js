@@ -2,7 +2,9 @@ import { OpenAI } from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export const systemPromptSencrom = `
+export function getSystemPromptSencrom() {
+  const today = new Date().toISOString().split('T')[0];
+  return `
 IMPORTANTE: SIEMPRE responde en formato json válido (usa la palabra "json" en tu respuesta), siguiendo exactamente el formato que te indico más abajo.
 
 Eres Crom-Bot, el asistente virtual de SENCROM. Tu objetivo es ayudar a los usuarios de la web brindarle toda la informacion necesaria y ayudarlos a agendar citas, crear tickets de soporte o ventas, responder preguntas sobre la empresa y sus servicios, y también actuar como un vendedor profesional con más de 10 años de experiencia, guiando al cliente hacia la compra de forma natural y persuasiva.
@@ -109,7 +111,10 @@ Contacto y más información en https://sencrom-web.vercel.app y en discord http
 - **Eurys Cruz** (Director de Marketing y Publicidad): eurys.cc.03@gmail.com (Correo por defecto para citas sin especificar)
 - **Darwin Yakil Diaz** (Director de Proyectos): darwindiaz0405@gmail.com
 - **Alexander Perez** (Director Administrativo y Ventas): lexton2833@gmail.com
+
+**Fecha de Hoy:** Para cálculos como "mañana", la fecha de hoy es ${today}.
 `;
+}
 
 /**
  * Procesa un mensaje de usuario y devuelve la respuesta y acción sugerida por la IA.
@@ -120,8 +125,8 @@ Contacto y más información en https://sencrom-web.vercel.app y en discord http
 export async function procesarMensajeBot(mensaje, historial = null) {
   let messages = [];
 
-  // Siempre inicia con el system prompt
-  messages.push({ role: 'system', content: systemPromptSencrom });
+  // Siempre inicia con el system prompt actualizado
+  messages.push({ role: 'system', content: getSystemPromptSencrom() });
 
   if (Array.isArray(historial) && historial.length > 0) {
     messages = messages.concat(historial);
@@ -134,11 +139,37 @@ export async function procesarMensajeBot(mensaje, historial = null) {
   });
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo',
+    model: 'gpt-3.5-turbo',
     messages,
     response_format: { type: 'json_object' },
   });
 
   const analysis = JSON.parse(response.choices[0].message.content);
+
+  if (analysis.accion === 'recomendar_ticket' && analysis.datos_ticket) {
+    const { tipo_ticket, descripcion_problema } = analysis.datos_ticket;
+    const emailUsuario = analysis.datos_ticket.email || (usuario_web && usuario_web.email) || 'no-proporcionado';
+    const nombreUsuario = analysis.datos_ticket.nombre || (usuario_web && usuario_web.name) || 'Usuario Web';
+
+    if (descripcion_problema) {
+      const asuntoTicket = tipo_ticket
+        ? `Nuevo Ticket: ${tipo_ticket}`
+        : 'Nuevo Ticket de Soporte';
+
+      const payload = {
+        tipo: 'ticket',
+        asunto: asuntoTicket,
+        descripcion: descripcion_problema,
+        email: emailUsuario,
+        nombre: nombreUsuario,
+        reportado_por: nombreUsuario,
+      };
+      const makeResponse = await sendActionToMake(payload);
+      if (makeResponse && makeResponse.message) {
+        analysis.respuesta_al_usuario += `\n\n${makeResponse.message}`;
+      }
+    }
+  }
+
   return analysis;
 } 
